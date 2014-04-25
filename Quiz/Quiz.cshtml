@@ -1,15 +1,37 @@
 ﻿@{
-    
+    if (isPost) 
+    {
+        var version = Request["v"];
+        var points = Request["sp"];
+        var passing_percent = Request["psp"];
+        var gained_score = Request["tp"];
+        var username = Request["sn"];
+        var email = Request["se"];
+        var quiz_title = Request["qt"];
+        var xml_report=Request.Unvalidated("dr");        
+        var db = Database.Open("QuizPortal");
+        string insertQueryString=String.Format ("INSERT INTO Quiz (username, email, quiz_title, version, points, gained_score, xml_report) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}', N'{6}')",
+        username, email, quiz_title, version, points, gained_score, xml_report);
+        var data = db.Query(insertQueryString);                         
+    }
 }
 
-<!DOCTYPE html>
+@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Home Page";
+}
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
-        
-    </body>
-</html>
+@section featured {
+<section class="featured">
+    <div class="content-wrapper">
+        <hgroup class="title">
+            <h1>@Page.Title.</h1>
+            <h2>Modify this template to jump-start your ASP.NET Web Pages application.</h2>
+        </hgroup>
+        <p>
+            @Request.QueryString["id"];
+        </p>
+    </div>
+</section>
+}
+
