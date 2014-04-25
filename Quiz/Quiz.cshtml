@@ -1,37 +1,26 @@
 ﻿@{
-    if (isPost) 
+ if (IsPost)
     {
-        var version = Request["v"];
-        var points = Request["sp"];
-        var passing_percent = Request["psp"];
-        var gained_score = Request["tp"];
-        var username = Request["sn"];
-        var email = Request["se"];
-        var quiz_title = Request["qt"];
-        var xml_report=Request.Unvalidated("dr");        
-        var db = Database.Open("QuizPortal");
-        string insertQueryString=String.Format ("INSERT INTO Quiz (username, email, quiz_title, version, points, gained_score, xml_report) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}', N'{6}')",
-        username, email, quiz_title, version, points, gained_score, xml_report);
-        var data = db.Query(insertQueryString);                         
-    }
+        var id_string=Request.QueryString["id"];        
+        var db = Database.Open("ispring");
+        var commandText = @"SELECT COUNT(TaskId) FROM Tasks WHERE TaskId = @0";
+        if ((int)db.QueryValue(commandText, id_string) > 0)
+        {
+            var version = Request["v"];
+            var points = Request["sp"];
+            var passing_percent = Request["psp"];
+            var gained_score = Request["tp"];
+            var username = Request["sn"];
+            var email = Request["se"];
+            var quiz_title = Request["qt"];
+            var xml_report=Request.Unvalidated("dr");        
+            string insertQueryString="INSERT INTO Quiz (username, email, quiz_title, version, points, gained_score, xml_report)"+
+            " VALUES (@0,@1,@2,@3,@4,@5,@6,@7)";
+            db.Execute(insertQueryString, username, email, quiz_title, version, points, gained_score, xml_report,id_string);            
+        }
+        else
+        {
+            Response.SetStatus(404);
+        }            
+    }    
 }
-
-@{
-    Layout = "~/_SiteLayout.cshtml";
-    Page.Title = "Home Page";
-}
-
-@section featured {
-<section class="featured">
-    <div class="content-wrapper">
-        <hgroup class="title">
-            <h1>@Page.Title.</h1>
-            <h2>Modify this template to jump-start your ASP.NET Web Pages application.</h2>
-        </hgroup>
-        <p>
-            @Request.QueryString["id"];
-        </p>
-    </div>
-</section>
-}
-
