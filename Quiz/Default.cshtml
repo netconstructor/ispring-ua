@@ -2,7 +2,7 @@
     Layout = "~/_SiteLayout.cshtml";
     Page.Title = "Quiz Analytics";
     var db = Database.Open("ispring");
-    var sql = "Select * from Quiz  ";
+    var sql = "Select UserName, Email, QuizTitle, Version, Points, GainedScore from Quiz";
     var quizes = db.Query(sql);
     var grid = new WebGrid(quizes);
 }
