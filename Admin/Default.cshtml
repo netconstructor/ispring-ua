@@ -18,13 +18,5 @@
 }
 
 @if ( Roles.IsUserInRole("Administrators")) {
-    <a href="~/Instructors/GetQuizId">Отримати ID для тесту</a> 
-}
-else
-    if ( Roles.IsUserInRole("Instructors")) {
-    <a href="~/Instructors/GetQuizId">Отримати ID для тесту</a>        
-}
-else
-{
-    <span> Welcome <b>@WebSecurity.CurrentUserName</b>! </span>
+    <p>Admin</p>
 }
