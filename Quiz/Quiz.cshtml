@@ -14,7 +14,7 @@
             var email = Request["se"];
             var quiz_title = Request["qt"];
             var xml_report=Request.Unvalidated("dr");        
-            string insertQueryString="INSERT INTO Quiz (username, email, quiz_title, version, points, gained_score, xml_report)"+
+            string insertQueryString="INSERT INTO Quiz (UserName, Email, QuizTitle, Version, Points, GainedScore, XmlReport, TaskId)"+
             " VALUES (@0,@1,@2,@3,@4,@5,@6,@7)";
             db.Execute(insertQueryString, username, email, quiz_title, version, points, gained_score, xml_report,id_string);            
         }
