@@ -1,29 +1,27 @@
 ﻿@{
-    Layout = "~/_SiteLayout.cshtml";
-    Page.Title = "Quiz Analytics";
+    WebSecurity.RequireAuthenticatedUser();
+    Page.Title="Tasks";
+    Layout = "~/_SiteLayout.cshtml";    
     var db = Database.Open("ispring");
-    var sql = "Select UserName, Email, QuizTitle, Version, Points, GainedScore from Quiz";
-    var quizes = db.Query(sql);
-    var grid = new WebGrid(quizes);
+    var sql = "SELECT TaskId FROM Tasks WHERE UserId="+WebSecurity.CurrentUserId;
+    var tasks = db.Query(sql);
+    var grid = new WebGrid(tasks);
 }
 
 @section featured {
 <section class="featured">
     <div class="content-wrapper">
         <hgroup class="title">
-            <h1>@Page.Title.</h1>
-            <h2>Modify this template to jump-start your ASP.NET Web Pages application.</h2>
+            <h1>Quiz Analytics</h1>
+            <h2>@WebSecurity.CurrentUserName &nbsp; WebSecurity.CurrentUserId </h2>
         </hgroup>
         <p>
-            To learn more about ASP.NET Web Pages, visit
-            <a href="http://asp.net/webpages" title="ASP.NET Web Pages Website">http://asp.net/webpages</a>.
-            The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET Web Pages.
-            If you have any questions about ASP.NET Web Pages, visit
-            <a href="http://forums.iis.net/1166.aspx" title="ASP.NET Web Pages Forum">our forums</a>.
+            List of tasks.            
         </p>
     </div>
 </section>
 }
  
-@grid.GetHtml()
-
+@grid.GetHtml(
+    columns: grid.Columns( grid.Column("TaskId", format: @<a href=Task?id&#61;@item.TaskId>@item.TaskId</a>))
+ ) 

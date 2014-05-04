@@ -1,22 +1,117 @@
 ﻿@{
-    Layout = "~/_SiteLayout.cshtml";
-    Page.Title = "Home Page";
+    Page.Title="Manage Roles";
+    var roleName =  "";
+    string[] userNames =  new  string[1];
+    string[] roleNames =  new  string[1];
+    // Need to manually query users because Membership.GetAllUsers is not working
+    var db = Database.Open("ispring");
+    var selectQueryString =  "SELECT UserId, Email FROM UserProfile";
+
+    if(IsPost){
+     // Create new role
+     if(!Request["buttonCreateRole"].IsEmpty()){
+       roleName=Request["textRoleName"];
+       if(!Roles.RoleExists(roleName) && !roleName.IsEmpty()){
+        Roles.CreateRole(roleName);
+      }  
+    }  // if(buttonCreateRole)
+     // Delete role
+     if(!Request["buttonDeleteRole"].IsEmpty()){
+       roleName=Request["textRoleName"];
+       if(Roles.GetUsersInRole(roleName).Length ==  0 && !roleName.IsEmpty())
+      {
+        Roles.DeleteRole(roleName,  true); // true means throw if any users are in this role
+      }
+    }  // if(buttonDeleteRole)
+
+     // Add user to role
+     if(!Request["buttonAddUserToRole"].IsEmpty()){
+      userNames[0] = Request["selectUserName"];
+      roleNames[0] = Request["selectRoleName"];
+       if(!Roles.IsUserInRole(userNames[0], roleNames[0])){
+        Roles.AddUsersToRoles(userNames, roleNames);
+      }
+    }  // if(buttonAddUserToRole)
+     // Delete user from role
+     if(!Request["buttonDeleteUserFromRole"].IsEmpty()){
+      userNames[0] = Request["selectUserName"];
+      roleNames[0] = Request["selectRoleName"];
+       if(Roles.IsUserInRole(userNames[0], roleNames[0])){
+        Roles.RemoveUsersFromRoles(userNames, roleNames);
+      }
+    }  // if(buttonDeleteUseFromRole)
+  }
 }
 
 @section featured {
-<section class="featured">
-    <div class="content-wrapper">
-        <hgroup class="title">
-            <h1>@Page.Title.</h1>
-            <h2>Quiz Statistics for iSpring QuizMaker.</h2>
-        </hgroup>
-        <p>
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@Page.Title.</h1>
+                <h2>Manage Roles</h2>
+            </hgroup>
+            <p>
             Quiz Stat:Last Login:Last Task...
-        </p>
-    </div>
-</section>
+            </p>
+        </div>
+    </section>
 }
 
-@if ( Roles.IsUserInRole("Administrators")) {
-    <p>Admin</p>
-}
+<form method="post">
+    <aside>
+        <fieldset>
+            <label for="textRoleName">Role name:</label><br />
+            <input type="text" value="" name="textRoleName" />  &nbsp;
+            <input type="submit" value="Create Role" name="buttonCreateRole" />
+            <input type="submit" value="Delete Role" name="buttonDeleteRole" />
+        </fieldset>
+    </aside>
+    <article>
+        <fieldset>
+            <label for="selectUserName">Users:</label>
+            <select name="selectUserName">                
+                @foreach(var row  in db.Query(selectQueryString)) {
+                   <option>@row.Email</option>
+                }               
+                
+            </select>
+           &nbsp;
+            <label for="selectRoleName">Roles:</label>
+            <select name="selectRoleName">
+                @foreach(var r  in Roles.GetAllRoles())
+                {            
+                    <option>@r</option>
+                }
+            </select>
+           &nbsp;
+            <input type="submit" value="Add User to Role" name="buttonAddUserToRole" />
+            <input type="submit" value="Delete User from Role" name="buttonDeleteUserFromRole" />
+        </fieldset>
+
+        <h2>Roles</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Role</th>
+                <th>Member</th>
+            </tr>
+        </thead>
+            @foreach(var r  in Roles.GetAllRoles())        
+            {        
+                <tr>
+                    <td>@r</td>
+                    <td>&nbsp;</td>
+                </tr>
+                foreach(var u  in Roles.GetUsersInRole(r))                    
+                {                    
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>@u</td>
+                    </tr>
+                }
+             }
+        </table>
+        <div><a href="@Href("~/Default")">Return to home page</a></div>
+    </article>
+
+</form>
