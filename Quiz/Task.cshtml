@@ -23,5 +23,11 @@
 }
  
 @grid.GetHtml(
-    columns: grid.Columns( grid.Column("Edit", format: @<a href=Task?id&#61;@item.QuizId>@item.QuizId</a>))
+    columns: grid.Columns( grid.Column("Edit", format: @<a href=Details?id&#61;@item.QuizId>@item.QuizId</a>),
+                           grid.Column("UserName"),
+                           grid.Column("Email"),
+                           grid.Column("QuizTitle"),
+                           grid.Column("Version"),
+                           grid.Column("Points"),  
+                           grid.Column("GainedScore"))                                                   
  ) 

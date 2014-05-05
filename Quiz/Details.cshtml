@@ -1,0 +1,13 @@
+﻿@{
+    //WebSecurity.RequireAuthenticatedUser();
+    Page.Title="Tasks";
+    //Layout = "~/_SiteLayout.cshtml";    
+    var db = Database.Open("ispring");
+    var sql = "SELECT XmlReport FROM Quiz WHERE QuizId='"+Request.QueryString["id"]+"'";
+    var quizes = db.QuerySingle(sql);
+    Response.ContentType = "text/xml";
+    Response.Write(quizes.XmlReport);
+}
+
+
+ 
