@@ -3,14 +3,11 @@
     Page.Title="Tasks";
     Layout = "~/_SiteLayout.cshtml";    
     var db = Database.Open("ispring");
+    var sql = "SELECT TaskId FROM Tasks WHERE UserId="+WebSecurity.CurrentUserId;
     if (Roles.IsUserInRole("Administrators"))
     {
-        var sql = "SELECT TaskId, UserId FROM Tasks";
-    }
-    else
-    {
-        var sql = "SELECT TaskId FROM Tasks WHERE UserId="+WebSecurity.CurrentUserId;
-    }
+        sql = "SELECT TaskId, UserId FROM Tasks";
+    }    
     var tasks = db.Query(sql);
     var grid = new WebGrid(tasks);
 }
@@ -33,9 +30,9 @@
 {
     @grid.GetHtml(
     columns: 
-    grid.Columns(     
-        grid.Columns( grid.Column("TaskId", format: @<a href=Task?id&#61;@item.TaskId>@item.TaskId</a>)),
-        grid.Columns( grid.Column("UserId"))    
+    grid.Columns(
+        grid.Column("TaskId", format: @<a href="Task?id&#61;@item.TaskId">@item.TaskId</a>),
+        grid.Column("UserId", format: @<a href="User?id&#61;@item.UserId">@item.UserId</a>)
         )
     )
  }
