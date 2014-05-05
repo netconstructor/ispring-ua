@@ -3,25 +3,46 @@
     Page.Title="Tasks";
     Layout = "~/_SiteLayout.cshtml";    
     var db = Database.Open("ispring");
-    var sql = "SELECT TaskId FROM Tasks WHERE UserId="+WebSecurity.CurrentUserId;
+    if (Roles.IsUserInRole("Administrators"))
+    {
+        var sql = "SELECT TaskId, UserId FROM Tasks";
+    }
+    else
+    {
+        var sql = "SELECT TaskId FROM Tasks WHERE UserId="+WebSecurity.CurrentUserId;
+    }
     var tasks = db.Query(sql);
     var grid = new WebGrid(tasks);
 }
 
 @section featured {
-<section class="featured">
-    <div class="content-wrapper">
-        <hgroup class="title">
-            <h1>Quiz Analytics</h1>
-            <h2>@WebSecurity.CurrentUserName &nbsp; WebSecurity.CurrentUserId </h2>
-        </hgroup>
-        <p>
-            List of tasks.            
-        </p>
-    </div>
-</section>
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>Quiz Analytics</h1>
+                <h2>@WebSecurity.CurrentUserName &nbsp; WebSecurity.CurrentUserId </h2>
+            </hgroup>
+            <p>
+            List of tasks.
+            </p>
+        </div>
+    </section>
 }
- 
-@grid.GetHtml(
-    columns: grid.Columns( grid.Column("TaskId", format: @<a href=Task?id&#61;@item.TaskId>@item.TaskId</a>))
- ) 
+
+@if (Roles.IsUserInRole("Administrators"))
+{
+    @grid.GetHtml(
+    columns: 
+    grid.Columns(     
+        grid.Columns( grid.Column("TaskId", format: @<a href=Task?id&#61;@item.TaskId>@item.TaskId</a>)),
+        grid.Columns( grid.Column("UserId"))    
+        )
+    )
+ }
+ else
+{
+    @grid.GetHtml(
+    columns: 
+    grid.Columns( grid.Column("TaskId", format: @<a href="Task?id&#61;@item.TaskId">@item.TaskId</a>))    
+    )
+}
