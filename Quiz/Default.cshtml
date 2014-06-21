@@ -31,8 +31,8 @@
     @grid.GetHtml(
     columns: 
     grid.Columns(
-        grid.Column("TaskId", format: @<a href="Task?id&#61;@item.TaskId">@item.TaskId</a>),
-        grid.Column("UserId", format: @<a href="User?id&#61;@item.UserId">@item.UserId</a>)
+        grid.Column("TaskId", format: @<a href="~/Quiz/Assignment?id=@item.TaskId">@item.TaskId</a>),
+        grid.Column("UserId", format: @<a href="~/Quiz/User?id=@item.UserId">@item.UserId</a>)
         )
     )
  }
